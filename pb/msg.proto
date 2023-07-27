@@ -1,0 +1,52 @@
+syntax="proto3";                //Proto协议
+option go_package = ".;pb";
+package pb;                     //当前包名
+option csharp_namespace="Pb";   //给C#提供的选项
+
+// 上线协议，pid 用户id
+message SyncPid {
+  int32 Pid = 1;
+}
+
+// 世界聊天，content 聊天内容
+message Talk {
+  string Content = 1;
+}
+
+// 移动坐标，x x轴横坐标，y 高度坐标，z y轴横坐标，v 物体或任务旋转的角度（0~360）
+message Position {
+  float X = 1;
+  float Y = 2;
+  float Z = 3;
+  float V = 4;
+}
+
+// 广播消息：
+// pid 为用户id，tp 表示广播消息类别：
+// 1.世界聊天
+// 2.坐标（出生点同步）
+// 3.动作
+// 4.移动之后坐标信息更新
+// data 表示具体传输的消息格式，根据不同的 tp 会表现不同的数据类型
+// content 是 tp=1 的聊天内容
+// position 是 tp=2、4 广播的坐标数据
+// actionData 是 tp=3 广播的玩家动作数据
+message BroadCast {
+  int32 Pid = 1;
+  int32 Tp = 2;
+  oneof Data {
+    string Content = 3;
+    Position P = 4;
+    int32 ActionData = 5;
+  }
+}
+
+// 同步周围的人的位置
+message SyncPlayers {
+  repeated Player ps = 1;
+}
+
+message Player {
+  int32 pid = 1;
+  Position p = 2;
+}
